@@ -12,6 +12,7 @@ var Sti = require('./models/sti');
 
 var app = express();
 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -23,11 +24,13 @@ app.post('/register', function (req, res) {
 
 	// var hash = hasher(username.concat(password));
 
-	User.create({
+	var user = new User({
 		userHash: req.body.userPassHash,
 		gender: req.body.gender,
 		age: req.body.age,
-	}, function(err, user) {
+	});
+
+	user.save(function (err, user) {
 		if (!err) res.status(200).send(user);
 	});
 
@@ -57,8 +60,8 @@ app.post('/uniqueHash', function (req, res) {
 });
 
 app.get('/stilist', function (req, res) {
-	mongoose.model('sti').find({}).exec(function(err, docs) {
-		console.log(docs);
+	Sti.find(function(err, docs) {
+		res.send(docs);
 	});
 });
 
