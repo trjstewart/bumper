@@ -68,7 +68,7 @@ app.post('/login', function (req, res) {
 	var hash = hasher(req.body.user.name);
 	User.findOne({'userHash': hash}, function(err, doc) {
 		if(doc) {
-			res.send({'status': true});
+			res.send({'status': true, 'userID': hash});
 		}
 		else {
 			res.send({'status': false});
