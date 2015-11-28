@@ -1,0 +1,24 @@
+{
+  "name": "bumper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trjstewart/bumper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trjstewart/bumper/issues"
+  },
+  "homepage": "https://github.com/trjstewart/bumper#readme",
+  "dependencies": {
+    "express": "^4.13.3",
+    "hash-anything": "^1.0.4",
+    "mongoose": "^4.2.8"
+  }
+}
