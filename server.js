@@ -39,6 +39,7 @@ app.post('/register', function (req, res) {
 			User.findOne({'userHash': hash}, function(err, doc) {
 				if(doc) {
 					user = doc;
+					res.send(user);
 				}
 				else {
 					callback();
@@ -54,12 +55,12 @@ app.post('/register', function (req, res) {
 
 			user.save(function (err, user) {
 				if (!err) user = user;
+				res.send(user);
 			});
 
 		},
 		], function(err) {
       	if (err) return next(err);
-      	res.send(user);
 			});
 
 	// var user = new User({
