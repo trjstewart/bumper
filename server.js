@@ -60,9 +60,18 @@ app.post('/uniqueHash', function (req, res) {
 });
 
 app.get('/stilist', function (req, res) {
-	Sti.find(function(err, docs) {
-		res.send(docs);
+	Sti.find({}).select('name').exec(function(err, docs) {
+		if(!err) {
+			var stiNames = docs.map(function(sti) {
+				return sti.name;
+			});
+			res.send(stiNames);
+		}
 	});
+});
+
+app.post('/report', function (req, res) {
+	
 });
 
 var server = app.listen(3000, function () {
