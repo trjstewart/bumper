@@ -6,11 +6,15 @@ var express = require('express'),
 // DB connection
 var connection = mongoose.connect('mongodb://bumper:bumpb4hump@128.199.132.173/bumperdb');
 
+// Models
 var User = require('./models/user');
+var Sti = require('./models/sti');
 
 var app = express();
 
-app.use(bodyParser);
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.post('/register', function (req, res) {
 
@@ -19,7 +23,7 @@ app.post('/register', function (req, res) {
 
 	// var hash = hasher(username.concat(password));
 
-	mongoose.model("user").create({
+	User.create({
 		userHash: req.body.userPassHash,
 		gender: req.body.gender,
 		age: req.body.age,
@@ -29,8 +33,33 @@ app.post('/register', function (req, res) {
 
 });
 
-app.post('/isUnique', function (req, res) {
-	
+app.post('/login', function (req, res) {
+	var hash = req.body.userPassHash;
+	User.findOne({'userHash': hash}, function(err, doc) {
+		if(doc) {
+			res.send({'status': true});
+		}
+		else {
+			res.send({'status': false});
+		}
+	});
+});
+
+app.post('/uniqueHash', function (req, res) {
+	var hash = req.body.userPassHash;
+	User.findOne({'userHash': hash}, function(err, doc) {
+		if(err) {
+			res.send({'status': true});
+		}
+		else { res.send({'status': false}); }
+	});
+
+});
+
+app.get('/stilist', function (req, res) {
+	mongoose.model('sti').find({}).exec(function(err, docs) {
+		console.log(docs);
+	});
 });
 
 var server = app.listen(3000, function () {
