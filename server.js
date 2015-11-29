@@ -34,12 +34,12 @@ app.post('/register', function (req, res) {
 	// var password = req.body.password;
 
 	var userObj = req.body.user;
-	var hash = hasher(userObject.name);
+	var hash = hasher(userObj.name);
 	var user;
 
 	async.series([
 		function(callback) {
-			User.findOneAndUpdate({'userHash': hash}, { deviceToken: userObject.deviceToken }, { upsert:true, new:true }, function(err, doc) {
+			User.findOneAndUpdate({'userHash': hash}, { deviceToken: userObj.deviceToken }, {}, function(err, doc) {
 				if(doc) {
 					user = doc;
 					res.send(user);
@@ -52,9 +52,9 @@ app.post('/register', function (req, res) {
 		function(callback) {
 			var user = new User({
 				userHash: hash,
-				gender: userObject.gender,
-				age: userObject.age,
-				deviceToken: userObject.deviceToken,
+				gender: userObj.gender,
+				age: userObj.age,
+				deviceToken: userObj.deviceToken,
 			});
 
 			user.save(function (err, user) {
@@ -184,10 +184,9 @@ app.post('/report', function (req, res) {
 		// },
 		function(callback) {
 
-			Bump.find({'user1': userObject.hash}, function(err, docs) {
+			Bump.find({'user1': userObj.hash}, function(err, docs) {
 				if(docs) {
 					hashes.push(docs);
-					console.log(hashes);
 					callback;
 				}
 			});
@@ -195,10 +194,9 @@ app.post('/report', function (req, res) {
 		},
 		function(callback) {
 
-			Bump.find({'user2': userObject.hash}, function(err, docs) {
+			Bump.find({'user2': userObj.hash}, function(err, docs) {
 				if(docs) {
 					hashes.push(docs);
-					console.log(hashes);
 					callback;
 				}
 			});
