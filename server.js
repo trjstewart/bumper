@@ -2,7 +2,8 @@ var express = require('express'),
 	mongoose = require('mongoose'),
 	bodyParser = require('body-parser'),
 	hasher = require('hash-anything').sha1,
-	async = require('async');
+	async = require('async'),
+	uniques = require('uniques');
 
 // DB connection
 var connection = mongoose.connect('mongodb://bumper:bumpb4hump@128.199.132.173/bumperdb');
@@ -12,6 +13,7 @@ var User = require('./models/user');
 var Sti = require('./models/sti');
 var Ping = require('./models/ping');
 var Bump = require('./models/bump');
+var Report = require('./models/report');
 
 var app = express();
 
@@ -76,7 +78,7 @@ app.post('/register', function (req, res) {
 app.post('/login', function (req, res) {
 	var userObject = req.body.user;
 	var hash = hasher(userObject.name);
-	User.findOneAndUpdate({'userHash': hash}, { deviceToken: userObject.deviceToken }, { upsert:true, new:true }, function(err, doc) {
+	User.findOneAndUpdate({'userHash': hash}, { deviceToken: userObject.deviceToken }, {}, function(err, doc) {
 		if(doc) {
 			res.send({'status': true, 'userID': hash});
 		}
@@ -164,6 +166,52 @@ app.post('/ping', function (req, res) {
 
 app.post('/report', function (req, res) {
 	var userObj = req.body.user;
+	var hashes = [];
+
+	async.series([
+		// function(callback) {
+
+		// 	var report = new Report({
+		// 		userHash: userObject.hash,
+		// 		sti: userObject.sti,
+		// 		days: userObject.days,
+		// 	});
+
+		// 	report.save(function (err, report) {
+		// 		if (!err) callback();
+		// 	});
+
+		// },
+		function(callback) {
+
+			Bump.find({'user1': userObject.hash}, function(err, docs) {
+				if(docs) {
+					hashes.push(docs);
+					console.log(hashes);
+					callback;
+				}
+			});
+
+		},
+		function(callback) {
+
+			Bump.find({'user2': userObject.hash}, function(err, docs) {
+				if(docs) {
+					hashes.push(docs);
+					console.log(hashes);
+					callback;
+				}
+			});
+
+		},
+		function(callback) {
+			hashes = uniques(hashes);
+			console.log(hashes);
+		},
+		], function(err) {
+      	if (err) return next(err);
+			});
+
 	//hash, sti, days
 });
 

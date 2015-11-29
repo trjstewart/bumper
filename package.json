@@ -23,6 +23,7 @@
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "hash-anything": "^1.0.4",
-    "mongoose": "^4.2.8"
+    "mongoose": "^4.2.8",
+    "uniques": "0.0.1"
   }
 }
