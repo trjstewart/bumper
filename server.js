@@ -237,7 +237,7 @@ app.post('/report', function (req, res) {
 			var notification = {
 			  "tokens": tokens,
 			  "notification":{
-			    "alert":"Hello World!",
+			    "alert": "Sorry you might have an STI, Please get a check.",
 			  }
 			};
 
