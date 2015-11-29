@@ -31,12 +31,13 @@ app.post('/register', function (req, res) {
 	// var username = req.body.username;
 	// var password = req.body.password;
 
-	var hash = hasher(req.body.user.name);
+	var userObj = req.body.user;
+	var hash = hasher(userObject.name);
 	var user;
 
 	async.series([
 		function(callback) {
-			User.findOne({'userHash': hash}, function(err, doc) {
+			User.findOneAndUpdate({'userHash': hash}, { deviceToken: userObject.deviceToken }, { upsert:true, new:true }, function(err, doc) {
 				if(doc) {
 					user = doc;
 					res.send(user);
@@ -49,8 +50,9 @@ app.post('/register', function (req, res) {
 		function(callback) {
 			var user = new User({
 				userHash: hash,
-				gender: req.body.user.gender,
-				age: req.body.user.age,
+				gender: userObject.gender,
+				age: userObject.age,
+				deviceToken: userObject.deviceToken,
 			});
 
 			user.save(function (err, user) {
@@ -72,8 +74,9 @@ app.post('/register', function (req, res) {
 });
 
 app.post('/login', function (req, res) {
-	var hash = hasher(req.body.user.name);
-	User.findOne({'userHash': hash}, function(err, doc) {
+	var userObject = req.body.user;
+	var hash = hasher(userObject.name);
+	User.findOneAndUpdate({'userHash': hash}, { deviceToken: userObject.deviceToken }, { upsert:true, new:true }, function(err, doc) {
 		if(doc) {
 			res.send({'status': true, 'userID': hash});
 		}
@@ -153,6 +156,7 @@ app.post('/ping', function (req, res) {
 		},
 		], function(err) {
       	if (err) return next(err);
+   			res.send('Happy Humping');
 			});
 
 });

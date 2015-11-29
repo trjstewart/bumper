@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
           userHash: String,
           gender: String,
           age: Number,
+          deviceToken: { type : String , "default" : '' },
           profile: { type : Array , "default" : [] }
       }),
 User = mongoose.model('user', userSchema);
