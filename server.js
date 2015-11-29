@@ -242,7 +242,7 @@ app.post('/report', function (req, res) {
 			};
 
 			//console.log(notification);
-			var p = ionic_push(credentials, notification);
+			ionic_push(credentials, notification);
 			//console.log(p);
 
 		},
@@ -251,6 +251,17 @@ app.post('/report', function (req, res) {
 			});
 
 		res.send('Oh, SHIT!');
+});
+
+app.post('/updatedevicetoken', function(req, res) {
+	var user = req.body.user;
+	var conditions = {userHash: user.hash};
+	var update = {deviceToken: user.token};
+	var options = {};
+	User.update(conditions, update, options, function(err, numAffected) {
+		console.log('Updated ' + user.hash + ' with a new id of ' + user.token);
+		res.send('Users ID has been bumped!');
+	});
 });
 
 var server = app.listen(5000, function () {
