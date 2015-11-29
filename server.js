@@ -155,14 +155,15 @@ app.post('/ping', function (req, res) {
 
 		},
 		], function(err) {
+				if(!err) res.send('Happy Humping');
       	if (err) return next(err);
-   			res.send('Happy Humping');
 			});
 
 });
 
 app.post('/report', function (req, res) {
-
+	var userObj = req.body.user;
+	//hash, sti, days
 });
 
 var server = app.listen(5000, function () {
