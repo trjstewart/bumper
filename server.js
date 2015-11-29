@@ -155,9 +155,10 @@ app.post('/ping', function (req, res) {
 
 		},
 		], function(err) {
-				if(!err) res.send('Happy Humping');
       	if (err) return next(err);
 			});
+
+	res.send('Happy Humping');
 
 });
 
