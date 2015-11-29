@@ -3,7 +3,9 @@ var express = require('express'),
 	bodyParser = require('body-parser'),
 	hasher = require('hash-anything').sha1,
 	async = require('async'),
-	uniques = require('uniques');
+	uniques = require('uniques'),
+	request = require('request'),
+	ionic_push = require('ionic-push-server');
 
 // DB connection
 var connection = mongoose.connect('mongodb://bumper:bumpb4hump@128.199.132.173/bumperdb');
@@ -27,6 +29,11 @@ app.use(function(req, res, next) {
 	 res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	 next();
 });
+
+var credentials = {
+    IonicApplicationID : "b412dc5b",
+    IonicApplicationAPIsecret : "3ca8040a8c49260adf3d9a27f1299b01121b959a22f2114b"
+};
 
 app.post('/register', function (req, res) {
 
@@ -167,6 +174,9 @@ app.post('/ping', function (req, res) {
 app.post('/report', function (req, res) {
 	var userObj = req.body.user;
 	var hashes = [];
+	var tokens = [];
+	var count = 0;
+
 
 	async.series([
 		// function(callback) {
@@ -186,31 +196,61 @@ app.post('/report', function (req, res) {
 
 			Bump.find({'user1': userObj.hash}, function(err, docs) {
 				if(docs) {
-					hashes.push(docs);
-					callback;
+					for (var i=0; i<docs.length; i++) {
+						hashes.push(docs[i].user2);
+					}
+
+					Bump.find({'user2': userObj.hash}, function(err, docs) {
+						if(docs) {
+							for (var i=0; i<docs.length; i++) {
+								hashes.push(docs[i].user1);
+							}
+							hashes = uniques(hashes);
+							callback();
+						}
+					});
+					
 				}
 			});
 
 		},
 		function(callback) {
 
-			Bump.find({'user2': userObj.hash}, function(err, docs) {
-				if(docs) {
-					hashes.push(docs);
-					callback;
-				}
-			});
+			for (var i=0; i< hashes.length; i++) {
+				User.findOne({'userHash': hashes[i]}, function(err, doc) {
+					if(!err) {
+						if (doc.deviceToken) {
+							tokens.push(doc.deviceToken);	
+						}
+						count++;
+					}
+					if (count == (hashes.length)) {
+						//console.log('');
+						callback();
+					}
+				});
+			}
 
 		},
 		function(callback) {
-			hashes = uniques(hashes);
-			console.log(hashes);
+			
+			var notification = {
+			  "tokens": tokens,
+			  "notification":{
+			    "alert":"Hello World!",
+			  }
+			};
+
+			//console.log(notification);
+			var p = ionic_push(credentials, notification);
+			//console.log(p);
+
 		},
 		], function(err) {
       	if (err) return next(err);
 			});
 
-	//hash, sti, days
+		res.send('Oh, SHIT!');
 });
 
 var server = app.listen(5000, function () {
