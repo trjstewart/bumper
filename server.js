@@ -10,7 +10,7 @@ var express = require('express'),
 	exec = require('child_process').exec;
 
 // DB connection
-var connection = mongoose.connect('mongodb://bumper:bumpb4hump@128.199.132.173/bumperdb');
+var connection = mongoose.connect( process.env.MONGO_URL || 'mongodb://bumper:bumpb4hump@128.199.132.173/bumperdb' );
 
 // Models
 var User = require('./models/user');
