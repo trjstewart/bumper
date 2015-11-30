@@ -5,7 +5,9 @@ var express = require('express'),
 	async = require('async'),
 	uniques = require('uniques'),
 	request = require('request'),
-	ionic_push = require('ionic-push-server');
+	ionicPushServer = require('ionic-push-server'),
+	btoa = require('btoa'),
+	exec = require('child_process').exec;
 
 // DB connection
 var connection = mongoose.connect('mongodb://bumper:bumpb4hump@128.199.132.173/bumperdb');
@@ -233,17 +235,25 @@ app.post('/report', function (req, res) {
 
 		},
 		function(callback) {
-			
+
+			console.log(tokens);
+
 			var notification = {
-			  "tokens": tokens,
-			  "notification":{
-			    "alert": "Sorry you might have an STI, Please get a check.",
+			  "tokens": [],
+			  "notification": {
+			    "alert":"Sorry you might have an STI, Please get a check.",
 			  }
 			};
 
-			//console.log(notification);
-			ionic_push(credentials, notification);
-			//console.log(p);
+			if(tokens.length != 0) {
+
+				for (var i=0; i < tokens.length; i++) {
+					notification.tokens = Array(tokens[i]);
+					//console.log(notification);
+					ionicPushServer(credentials, notification);
+				}
+
+			}
 
 		},
 		], function(err) {

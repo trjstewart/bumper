@@ -20,12 +20,17 @@
   "dependencies": {
     "async": "^1.5.0",
     "body-parser": "^1.14.1",
+    "btoa": "^1.1.2",
+    "exec": "^0.2.1",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
     "hash-anything": "^1.0.4",
+    "http": "0.0.0",
     "ionic-push-server": "^1.0.0",
     "mongoose": "^4.2.8",
     "request": "^2.67.0",
-    "uniques": "0.0.1"
+    "shelljs": "^0.5.3",
+    "uniques": "0.0.1",
+    "util": "^0.10.3"
   }
 }
