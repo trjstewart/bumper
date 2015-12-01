@@ -127,12 +127,14 @@ app.post('/ping', function (req, res) {
 	var centerX;
 	var centerY;
 
+	consle.log("Ping from " + hash);
+
 	async.series([
 		function(callback) {
 			var ping = new Ping({
 				userHash: hash,
 				lat: req.body.latitude,
-				lng: req.body.longitude,
+				lng: req.body.longitude
 			});
 
 			ping.save(function (err, ping) {
@@ -155,10 +157,10 @@ app.post('/ping', function (req, res) {
 					{ latitude: docs[0].lat, longitude: docs[0].lng },
 					{ latitude: docs[1].lat, longitude: docs[1].lng }
 					);
-
+				console.log(center);
 				centerX = center.latitude;
 				centerY = center.longitude;
-
+				console.log(centerX, centerY);
 				distance = geolib.getDistance(
 					{ latitude: docs[0].lat, longitude: docs[0].lng },
 					{ latitude: docs[1].lat, longitude: docs[1].lng }
@@ -171,6 +173,7 @@ app.post('/ping', function (req, res) {
 				if (distance < 100 && secDiff < 3) {
 					user2 = docs[0].userHash;
 					user1 = docs[1].userHash;
+					console.log("Bumping " + user1 + " and " + user2);
 					callback();
 				}
 
