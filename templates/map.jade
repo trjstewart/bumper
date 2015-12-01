@@ -19,9 +19,7 @@ html
                             var bump = bumps[i];
                             if (bump.centerX){
                                 console.log(bump.centerX + " " + bump.centerY);
-                                var bumpLocation = new google.maps.LatLng(bump.centerX, bump.centerY);
-                                console.log(bumpLocation);
-                                mapData.push(bumpLocation);
+                                mapData.push(new google.maps.LatLng(bump.centerX, bump.centerY));
                             }
                         }
                     }
@@ -30,8 +28,8 @@ html
             }
             function initMap(){
                 var brisbane = new google.maps.LatLng(-27.466, 153);
-                var mapData = generateMapData();
-                console.log(mapData);
+                var heatMapData = generateMapData();
+                console.log(heatMapData);
 
                 var map = new google.maps.Map(document.getElementById('bump'), {
                     center: brisbane,
@@ -40,7 +38,7 @@ html
                 });
 
                 var heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: mapData,
+                    data: heatMapData,
                     map : map
                 });
             }
