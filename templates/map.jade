@@ -16,8 +16,9 @@ html
                 $.post('/stats/api/bumplocations', '', function(bumps){
                     if (bumps.length){
                         for (var i = 0; i < bumps.length; i++) {
-                            if (bumps[i]['centreX']){
-                                var bumpLocation = new google.maps.LatLng(parseFloat(bumps[i]['centreX']), parseFloat(bumps[i]['centreY']));
+                            var bump = bumps[i];
+                            if (bump.centerX){
+                                var bumpLocation = new google.maps.LatLng(bump.centerX, bump.centerY);
                                 console.log(bumpLocation);
                                 mapData.push(bumpLocation);
                             }
