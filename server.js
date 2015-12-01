@@ -153,14 +153,14 @@ app.post('/ping', function (req, res) {
 		function(callback) {
 			Ping.find({}).sort('-dateTime').limit(2).exec(function(err, docs) {
 
-				center = geolib.getCenter(
+				center = geolib.getCenter([
 					{ latitude: docs[0].lat, longitude: docs[0].lng },
 					{ latitude: docs[1].lat, longitude: docs[1].lng }
-					);
-				console.log(center);
+					]);
+				console.log("center is " + center);
 				centerX = center.latitude;
 				centerY = center.longitude;
-				console.log(centerX, centerY);
+				console.log(centerX + " y: " + centerY);
 				distance = geolib.getDistance(
 					{ latitude: docs[0].lat, longitude: docs[0].lng },
 					{ latitude: docs[1].lat, longitude: docs[1].lng }
