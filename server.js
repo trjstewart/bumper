@@ -127,7 +127,7 @@ app.post('/ping', function (req, res) {
 	var centerX;
 	var centerY;
 
-	consle.log("Ping from " + hash);
+	console.log("Ping from " + hash);
 
 	async.series([
 		function(callback) {
