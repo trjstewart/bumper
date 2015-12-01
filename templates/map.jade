@@ -38,9 +38,10 @@ html
                 });
 
                 var heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: heatMapData,
-                    map : map
+                    data: heatMapData
                 });
+
+                heatmap.setMap(map);
             }
             google.maps.event.addDomListener(window, "load", initMap);
 
