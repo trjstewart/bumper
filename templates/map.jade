@@ -15,13 +15,15 @@ html
                 var mapData = [];
                 $.post('/stats/api/bumplocations', '', function(bumps){
                     if (bumps.length){
+                        var dataArray = [];
                         for (var i = 0; i < bumps.length; i++) {
                             var bump = bumps[i];
                             if (bump.centerX){
                                 console.log(bump.centerX + " " + bump.centerY);
-                                mapData.push(new google.maps.LatLng(bump.centerX, bump.centerY));
+                                dataArray.push(new google.maps.LatLng(bump.centerX, bump.centerY));
                             }
                         }
+                        console.log(dataArray);
                     }
                 });
                 console.log(mapData);
