@@ -22,6 +22,9 @@ var Report = require('./models/report');
 
 var app = express();
 
+app.set('views', './templates');
+app.set('view engine', 'jade');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
@@ -39,10 +42,6 @@ var credentials = {
 };
 
 app.post('/register', function (req, res) {
-
-	// var username = req.body.username;
-	// var password = req.body.password;
-
 	var userObj = req.body.user;
 	var hash = hasher(userObj.name);
 	var user;
@@ -165,7 +164,7 @@ app.post('/ping', function (req, res) {
 					{ latitude: docs[1].lat, longitude: docs[1].lng }
 					);
 
-				var secDiff = Math.abs(docs[1].dateTime - docs[0].dateTime)/1000
+				var secDiff = Math.abs(docs[1].dateTime - docs[0].dateTime)/1000;
 
 				//console.log(distance, secDiff);
 
@@ -183,13 +182,13 @@ app.post('/ping', function (req, res) {
 				user2: user2,
 				distance: distance,
 				centerX: centerX,
-				centerY: centerY,
+				centerY: centerY
 			});
 
 			bump.save(function (err, bump) {
 			});
 
-		},
+		}
 		], function(err) {
       	if (err) return next(err);
 			});
@@ -298,6 +297,21 @@ app.post('/updatedevicetoken', function(req, res) {
 		console.log('Updated ' + user.hash + ' with a new id of ' + user.token);
 		res.send('Users ID has been bumped!');
 	});
+});
+
+//stats api
+app.post('/stats/api/bumplocations', function(req, res) {
+	Bump.find({}, function(err, docs){
+		if (err) console.log(err);
+		else {
+			res.send(docs);
+		}
+	})
+});
+
+// stats analysis
+app.get('/stats/maps', function(req, res){
+	res.render('map.jade');
 });
 
 var server = app.listen(5000, function () {
