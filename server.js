@@ -7,6 +7,7 @@ var express = require('express'),
 	request = require('request'),
 	ionicPushServer = require('ionic-push-server'),
 	btoa = require('btoa'),
+	geolib = require('geolib'),
 	exec = require('child_process').exec;
 
 // DB connection
@@ -128,6 +129,8 @@ app.post('/ping', function (req, res) {
 		function(callback) {
 			var ping = new Ping({
 				userHash: hash,
+				lat: req.body.latitude,
+				lng: req.body.longitude,
 			});
 
 			ping.save(function (err, ping) {
@@ -138,21 +141,29 @@ app.post('/ping', function (req, res) {
 		},
 		function(callback) {
 			Ping.count({}, function(err, count) {
-				if (count === 2) {
+				if (count >= 2) {
 					callback();
 				}
 			});
 		},
 		function(callback) {
 			Ping.find({}).sort('-dateTime').limit(2).exec(function(err, docs) {
-				user2 = docs[0].userHash;
-				user1 = docs[1].userHash;
-				callback();
-			});
-		},
-		function(callback) {
-			Ping.remove({}, function(err) {
-				if (!err) callback();
+
+				var distance = geolib.getDistance(
+					{ latitude: docs[0].lat, longitude: docs[0].lng },
+					{ latitude: docs[1].lat, longitude: docs[1].lng }
+					);
+
+				var secDiff = Math.abs(docs[1].dateTime - docs[0].dateTime)/1000
+
+				//console.log(distance, secDiff);
+
+				if (distance < 100 && secDiff < 3) {
+					user2 = docs[0].userHash;
+					user1 = docs[1].userHash;
+					callback();
+				}
+
 			});
 		},
 		function(callback) {
@@ -250,7 +261,8 @@ app.post('/report', function (req, res) {
 				for (var i=0; i < tokens.length; i++) {
 					notification.tokens = Array(tokens[i]);
 					//console.log(notification);
-					ionicPushServer(credentials, notification);
+					var r = ionicPushServer(credentials, notification);
+					console.log(r);
 				}
 
 			}

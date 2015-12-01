@@ -24,6 +24,7 @@
     "exec": "^0.2.1",
     "express": "^4.13.3",
     "express-session": "^1.12.1",
+    "geolib": "^2.0.18",
     "hash-anything": "^1.0.4",
     "http": "0.0.0",
     "ionic-push-server": "^1.0.0",

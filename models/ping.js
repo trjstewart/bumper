@@ -3,6 +3,8 @@ var mongoose = require('mongoose')
       pingSchema = new Schema( {
           userHash: String,
           dateTime: { type : Date, default: Date.now },
+          lat: Number,
+          lng: Number,
       }),
 Ping = mongoose.model('ping', pingSchema);
 
