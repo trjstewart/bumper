@@ -124,6 +124,9 @@ app.post('/ping', function (req, res) {
 	var hash = req.body.hash;
 	var user1;
 	var user2;
+	var distance;
+	var centerX;
+	var centerY;
 
 	async.series([
 		function(callback) {
@@ -149,7 +152,15 @@ app.post('/ping', function (req, res) {
 		function(callback) {
 			Ping.find({}).sort('-dateTime').limit(2).exec(function(err, docs) {
 
-				var distance = geolib.getDistance(
+				center = geolib.getCenter(
+					{ latitude: docs[0].lat, longitude: docs[0].lng },
+					{ latitude: docs[1].lat, longitude: docs[1].lng }
+					);
+
+				centerX = center.latitude;
+				centerY = center.longitude;
+
+				distance = geolib.getDistance(
 					{ latitude: docs[0].lat, longitude: docs[0].lng },
 					{ latitude: docs[1].lat, longitude: docs[1].lng }
 					);
@@ -170,6 +181,9 @@ app.post('/ping', function (req, res) {
 			var bump = new Bump({
 				user1: user1,
 				user2: user2,
+				distance: distance,
+				centerX: centerX,
+				centerY: centerY,
 			});
 
 			bump.save(function (err, bump) {
