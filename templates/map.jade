@@ -18,6 +18,7 @@ html
                         for (var i = 0; i < bumps.length; i++) {
                             var bump = bumps[i];
                             if (bump.centerX){
+                                console.log(bump.centerX + " " + bump.centerY);
                                 var bumpLocation = new google.maps.LatLng(bump.centerX, bump.centerY);
                                 console.log(bumpLocation);
                                 mapData.push(bumpLocation);
