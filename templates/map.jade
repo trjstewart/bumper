@@ -11,37 +11,39 @@ html
         script(type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6iCq8QhkfLd7JmtZjzDBtKfdpNAOFYn8&libraries=visualization&sensor=true_or_false")
         script(type="text/javascript" src!="https://code.jquery.com/jquery-2.1.4.min.js")
         script.
-            function generateMapData() {
+            function generateMapData(map) {
                 var mapData = [];
                 $.post('/stats/api/bumplocations', '', function(bumps){
                     if (bumps.length){
+                        var dataArray = [];
                         for (var i = 0; i < bumps.length; i++) {
                             var bump = bumps[i];
                             if (bump.centerX){
-                                var bumpLocation = new google.maps.LatLng(bump.centerX, bump.centerY);
-                                console.log(bumpLocation);
-                                mapData.push(bumpLocation);
+                                console.log(bump.centerX + " " + bump.centerY);
+                                dataArray.push(new google.maps.LatLng(bump.centerX, bump.centerY));
                             }
                         }
+                        console.log(dataArray);
+                        var heatmap = new google.maps.visualization.HeatmapLayer({
+                            data: dataArray
+                        });
+
+                        heatmap.setMap(map);
                     }
                 });
+                console.log(mapData);
                 return mapData;
             }
             function initMap(){
                 var brisbane = new google.maps.LatLng(-27.466, 153);
-                var mapData = generateMapData();
-                console.log(mapData);
+                console.log(heatMapData);
 
                 var map = new google.maps.Map(document.getElementById('bump'), {
                     center: brisbane,
                     zoom : 8,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 });
-
-                var heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: mapData,
-                    map : map
-                });
+                var heatMapData = generateMapData(map);
             }
             google.maps.event.addDomListener(window, "load", initMap);
 
